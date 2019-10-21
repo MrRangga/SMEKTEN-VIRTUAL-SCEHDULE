@@ -1,0 +1,35 @@
+<table class="table mt-5">
+        
+        <thead>
+            <tr>
+                <th>nama Kelas</th>
+                <th>hari</th>
+                <th>rombel</th>
+                <th>guru</th>
+                <th>status</th>
+                <th>action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($data as $data)
+            
+                <tr>
+                    <td>{{$data['nama_ruang']}}</td>
+                    <td>{{$data['daftar_hari']}}</td>
+                    <td>{{$data['nama_rombel']}}</td>
+                    <td>{{$data['nama_guru']}}</td>
+                    <td>{{$data['status']}}</td>
+                    <td scope="row">
+                            <a class="btn btn-sm btn-primary" href="{{url('jadwal/'. $data['id'])}}">detail</a>
+                        <form action="{{url('jadwal/'.$data['id'])}}" method="post">
+                            @csrf
+                            @method('delete')
+                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                            <a class="btn btn-sm btn-warning"href="{{url('jadwal/'. $data['id']).'/edit'}}">edit</a>
+                        </td>
+                </tr>
+                
+            @endforeach
+        </tbody>
+    </table>
