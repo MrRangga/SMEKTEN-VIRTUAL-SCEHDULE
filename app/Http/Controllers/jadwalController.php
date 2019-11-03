@@ -203,12 +203,12 @@ class jadwalController extends Controller
     
     public function cari(Request $req)
     {
-        // dd($req);
         // $ruang_all_data = Ruang::pluck('nama_ruang','id')->toArray();
         // dd($ruang_all_data);
         date_default_timezone_set('Asia/Jakarta');
         if($req['filter_1'] == 'cari')
         {
+            // dd($req->nama_kelas);
             // ambil nama hati  ini
         $hari_ini = $this->dayChecker();
         // ambil nama rombel
@@ -220,7 +220,6 @@ class jadwalController extends Controller
             $data = Jadwal::where('nama_hari','=',$req->nama_hari)->where('id_rombel','=',intval($req->nama_kelas))->get();
             $data = $data->toArray();
             if(count($data) == 1)
-            
             {
             
             $data=$data[0];

@@ -96,15 +96,17 @@
                     <td>{{$data['status']}}</td>
                     <td scope="row">
                             <a class="btn btn-sm btn-primary" href="{{url('jadwal/'. $data['id'])}}">detail</a>
-                        <form action="{{url('jadwal/'.$data['id'])}}" method="post">
-                            @csrf
-                            @method('delete')
+                            @auth
+                            
+                            <form action="{{url('jadwal/'.$data['id'])}}" method="post">
+                                @csrf
+                                @method('delete')
                                 <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                             </form>
                             <a class="btn btn-sm btn-warning"href="{{url('jadwal/'. $data['id']).'/edit'}}">edit</a>
+                            @endauth
                         </td>
-                </tr>
-                
+                    </tr>
         </tbody>
     </table>
     @elseif(Session::has('data4'))
@@ -226,7 +228,7 @@
                     $datas = $data7;
                 }
                 else{
-                    $datas = 'dancok data ne gak onk plek';
+                    $datas = 'jancok data ne gak onk plek';
                 }
                 @endphp
             <div class="container">
@@ -254,14 +256,11 @@
     
     @elseif(Session::has('cari_langsung'))
     <table class="table">
-            <tr>
-                <th>Nama Ruang</th>
-                <th>status</th>
-                <th>action</th>
-            </tr>   
+            
     @foreach ($data as $data)
             @if(preg_match('/'.Session::get('cari_langsung').'/',$data['nama_ruang']) && $data['status'] == 'active' && $data['daftar_hari'] == Session::get('hari_ini'))
                         <tr>
+                            
                                 <td scope="row">{{$data['nama_ruang']}} </td>
                                 <td scope="row">{{$data['status']}} </td>
                                 <td scope="row">
@@ -292,6 +291,7 @@
                                 </td>
                             </tr>
                         @elseif(preg_match('/'.Session::get('cari_langsung').'/',$data['nama_guru'])  && $data['status'] == 'active' && $data['daftar_hari'] == Session::get('hari_ini'))
+                        
                         <tr>
                                 <td scope="row">{{$data['nama_ruang']}} </td>
                                 <td scope="row">{{$data['status']}} </td>
@@ -307,10 +307,16 @@
                                 </td>
                             </tr>
                             @else
-                            {{-- <p>data {{Session::get('cari')}} tidak active</p> --}}
+                            @php
+                            Session::flash('aktif','data anda tidak memiliki jadwal saat ini');
+                            @endphp
                             @endif
                             @endforeach
-                </table>
+
+                        </table>
+                        @if(Session::has('aktif'))
+                            <p>{{Session::get('aktif')}}</p>
+                        @endif
     @elseif (isset($data)) 
 
 {{-- kolom pencarian --}}
@@ -344,7 +350,7 @@
 {{-- untuk filter ke 2 --}}
         <div class="col-md-6 col-lg-4 mt-3">
             <div class="container-2 bg-light px-3 py-2">
-            <form action="{{url('cari')}}" method="post">
+            <form action="{{url('cari')}}" method="post" id="form">
                     @csrf
                 <label for="kelas_kosong">
                 <input type="checkbox" name="kelas_kosong" id="kelas_kosong">
@@ -381,18 +387,33 @@
                 </tr>
             </thead>
             <tbody>
-    @foreach ($kelas as $key => $value)
-            <tr>
-                <td scope="row"><a href="{{$key}}" class="list_kelas">{{$value}}</a></td>
+                @foreach ($kelas as $key => $value)
+                <tr>
+                    <td scope="row">
+                        <form action="{{url('cari')}}" method="POST" >
+                            @csrf    
+                        <input type="hidden" name="nama_hari" value="{{$hari_ini}}">
+                        <input type="hidden" name="nama_kelas" value="{{$key}}">
+                        
+                        <button type="submit" class="btnKelas" name="filter_1" value="cari">{{$value}}</button>
+
+
+                </form>
+                </td>
+                    
             </tr>
+            
+            
             @endforeach
         </table>
     </tbody>
+    @auth
     <div > <a href="{{url('jadwal/create')}}" class="btn btn-md btn-primary"> Tambah Jadwal</a></div> 
-    
+    @endauth
 @else
+@auth   
 <p><a href="{{url('jadwal/create')}}">tambah jadwal</a></p>
-
+@endauth
     @endif
 
     

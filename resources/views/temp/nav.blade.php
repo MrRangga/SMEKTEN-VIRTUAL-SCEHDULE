@@ -6,14 +6,13 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav">
+            @auth
             <li class="nav-item">
               <a class="nav-link" href="{{url('sekolah')}}">Sekolah</a>
             </li>
+            @endauth
             <li class="nav-item">
                 <a class="nav-link" href="{{url('jadwal')}}">Ruang</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{url('api/v1/getJadwal')}}">Api</a>
             </li>
             
           </ul>

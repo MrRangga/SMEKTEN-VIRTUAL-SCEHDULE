@@ -29,18 +29,8 @@
     </div>
     @include('temp/footer')
     <!-- Optional JavaScript -->
-    
-      <script src="{{asset('js/siswakuapp.js')}}">
-      
-//       $(document).ready(function(){
-// alert('ok'); 
-//         // Department Change
-//                 $('.hari').change(function(){
-                
-//                 });
-  
-//       });
-  
-      </script>
+      <script src="{{asset('js/jquery.min.js')}}"></script>
+      <script src="{{asset('js/script.js')}}"></script>
+
   </body>
 </html>

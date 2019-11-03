@@ -14,17 +14,7 @@
     Route::get('/',function (){
         return redirect('awal');
     }); 
-    Route::get('cari/detail',function(){
-        $data5 = Session::get('data5');
-        // dd($data5);
-        $data6 = (Session::has('data6')) ? Session::get('data6') :'';
-        // dd($data5[1]);
-        foreach($data5 as $key => $value)
-        {
-            echo $value."<br>";
-        }
 
-    });
     // jadwal
     Route::resource('jadwal','jadwalController');
     // filter
@@ -41,3 +31,7 @@
 
 
         
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+

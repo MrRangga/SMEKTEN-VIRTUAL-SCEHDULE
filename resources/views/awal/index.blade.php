@@ -1,9 +1,9 @@
-@extends('master')
+@extends('layouts.app')
 
 @section('title','selamat datang di app ruang manajemen')
 
 @section('content')
-<div class="jumbotron mt-5 py-4">
+<div class="jumbotron ">
     <h1 class="display-4">Sekolahku , its so simple and usefull</h1>
     <p class="lead">Aplikasi monitoring jadwal Sekolah sederhana dikembangkan oleh Mohammad Firmansyah</p>
     <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#exampleModalLong">
