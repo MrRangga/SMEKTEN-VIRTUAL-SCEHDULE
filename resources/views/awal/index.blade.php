@@ -3,6 +3,7 @@
 @section('title','selamat datang di app ruang manajemen')
 
 @section('content')
+
 <div class="jumbotron ">
     <h1 class="display-4">Sekolahku , its so simple and usefull</h1>
     <p class="lead">Aplikasi monitoring jadwal Sekolah sederhana dikembangkan oleh Mohammad Firmansyah</p>
