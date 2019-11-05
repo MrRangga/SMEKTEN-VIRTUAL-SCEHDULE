@@ -72,6 +72,17 @@
             @endforeach
             </select>
         </div>
+        <div class="form-group">
+            <b>Kondisi Khusus</b> <br>
+            <label for="">Senin Upacara</label>
+            <input type="checkbox" name="jadwal_khusus" id="senin_upacara" value="senin_upacara"> <br>
+            <label for="jumat_12">Jumat kelas 12</label>
+            <input type="checkbox" name="jadwal_khusus" id="jumat_12" value="jumat_12"><br>
+            <label for="jumat_11">jumat kelas 11</label>
+            <input type="checkbox" name="jadwal_khusus" id="jumat_11" value="jumat_11"><br>
+            <label for="jumat_10">jumat kelas 10</label> 
+            <input type="checkbox" name="jadwal_khusus" id="jumat_10" value="jumat_10">
+        </div>
         @if($errors->has('rombel'))
         <br>
         <div class="alert alert-danger">{{ $errors->first('rombel') }}</div>

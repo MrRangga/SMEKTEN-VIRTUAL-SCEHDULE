@@ -19,6 +19,7 @@ class CreateJadwalTable extends Migration
             $table->integer('jam_awal')->nullable();
             $table->integer('jam_ahkir')->nullable();
             $table->string('nama_hari')->nullable();
+            $table->string('jadwal_khusus')->nullable();
             $table->integer('id_ruang')->unsigned()->nullable();
             $table->integer('id_guru')->unsigned()->nullable();
             $table->integer('id_rombel')->unsigned()->nullable();

@@ -394,7 +394,6 @@
                             @csrf    
                         <input type="hidden" name="nama_hari" value="{{$hari_ini}}">
                         <input type="hidden" name="nama_kelas" value="{{$key}}">
-                        
                         <button type="submit" class="btnKelas" name="filter_1" value="cari">{{$value}}</button>
 
 

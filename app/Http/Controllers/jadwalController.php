@@ -19,10 +19,19 @@ class jadwalController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * 
+     * 
+     * 
+     * 
      * @return \Illuminate\Http\Response`
      */
     public function index()
     {
+        // dd(count(Sekolah::all('nama_sekolah')) == 0);
+
+        if(count(Sekolah::all()) == 0){
+            return  redirect('sekolah/create');
+        }
         //tentukan zona waktu
         date_default_timezone_set('Asia/Jakarta');
         // tentukan hari ini
@@ -52,12 +61,17 @@ class jadwalController extends Controller
             $jam_ahkir= $jadwal::find($ruang[$a]['id'])->jam_ahkir;
             $jam =['awal' => $jam_awal,'ahkir' => $jam_ahkir];
             $jamke = $jam_awal;
-            $jam = $this->convertJam($jam,$jamke);
-            // echo date('H:i:s',$jam) .'<br>';
+            $jadwal_khusus = $jadwal->jadwal_khusus;
+            
+            $jam = $this->convertJam($jam,$jamke,$jadwal_khusus);
+            // dd(date('H:i:s',$jam));
             $jam = $this->cekJam($jam);
             $id []= Jadwal::find($ruang[$a]['id'])->id;
             $data[] = ['nama_ruang' => $nama_ruang,'status' => $jam,'id'=>$id[$a],'daftar_hari' => $daftar_hari,'nama_rombel' => $nama_rombel,'nama_guru' => $nama_guru];
+            
         }
+
+
         return view('jadwal/index',compact('data','id','kelas','hari','hari_ini'));
     }
 
@@ -110,6 +124,7 @@ class jadwalController extends Controller
         $pelajaran->jam_awal = $req->jam_awal;
         $pelajaran->jam_ahkir = $req->jam_terahkir;
         $pelajaran->nama_hari = $req->nama_hari;
+        $pelajaran->jadwal_khusus = $req->jadwal_khusus;
         $pelajaran->id_guru = $req->guru;
         $pelajaran->id_rombel = $req->nama_rombel;
         $pelajaran->save();
@@ -221,13 +236,14 @@ class jadwalController extends Controller
             $data = $data->toArray();
             if(count($data) == 1)
             {
-            
             $data=$data[0];
+            // dd($data);
             $jam_awal = $data['jam_awal'];
             $jam_ahkir = $data['jam_ahkir'];
             $jam =['awal' => $jam_awal,'ahkir' => $jam_ahkir];
             $jamke = $jam_awal;
-            $jam = $this->convertJam($jam,$jamke);
+            $jadwal_khusus = $data['jadwal_khusus'];
+            $jam = $this->convertJam($jam,$jamke,$jadwal_khusus);
             $jam = $this->cekJam($jam);
             // dd(date('H:i:s',$jam));
             // dd($jam);
@@ -454,19 +470,39 @@ class jadwalController extends Controller
     
 // baris ahkir function 
 
-private function convertJam($jam,$jamke)
+private function convertJam($jam,$jamke,$jadwal_khusus = null)
 {
     $jam_pulang = Sekolah::select('jam_pulang')->first();
     $jam_pulang=strtotime(date($jam_pulang['jam_pulang']));
     $jam_masuk=Sekolah::all('jam_masuk')->first();
-    $jam_masuk=strtotime(date($jam_masuk['jam_masuk']));
+    $jam_masuk = $jam_masuk['jam_masuk'];
     $detik = Sekolah::select('perjam')->first();
     $detik = $detik['perjam'] * 60 ;
     $jam_istirahat = Sekolah::select('jam_istirahat')->first();
     $jam_istirahat = $jam_istirahat['jam_istirahat'];
+    $durasi_istirahat = 30;
+    // dd($jadwal_khusus);
+    if ($jadwal_khusus == 'senin_upacara') {
+        $jam_masuk = '07:15';
+        $detik = 40 * 60;
+        $jam_istirahat= '09:55:00/12:30:00';
+        $durasi_istirahat = 35;
+    }
+
+    $jam_istirahat = $jam_istirahat;
     $jam_istirahat = explode('/',$jam_istirahat);
+    $jam_masuk_upacara = strtotime($jam_masuk);
+    // dd($jam_masuk_upacara);
     $jumlah_jam = Sekolah::select('jumlah_jam')->first();
-    $jamke_istirahat= $this->jamke_istirahat($jam_masuk,$jam_istirahat,$detik,$jumlah_jam['jumlah_jam']); 
+    $jumlah_jam = $jumlah_jam['jumlah_jam']; 
+    
+    if ($jumlah_jam == 11) {
+        $jumlah_jam += 1;
+    }
+    
+    // dd(date('H:i:s',$jam_masuk_upacara));
+    $jamke_istirahat= $this->jamke_istirahat($jam_masuk_upacara,$jam_istirahat,$detik,$jumlah_jam,$durasi_istirahat);
+
     if($jamke == 1){
         $jam_mulai = $jam_masuk;
     }   
@@ -516,7 +552,7 @@ private function convertJam($jam,$jamke)
 
     else
     {
-        $jam_mulai = $jam_masuk;
+        $jam_mulai = $jam_masuk_upacara;
     }
     
         if($jam['ahkir'] - $jam['awal'] == 0)
@@ -530,32 +566,40 @@ private function convertJam($jam,$jamke)
         $jam = $jumlahjam * $detik;
         $jam = $jam_mulai + $jam;
         
-    return $jam;
-}
-
-private function jamke_istirahat($jam_masuk,$jam_istirahat,$detik,$jumlah_jam)
-{
+        return $jam;
+    }
     
-    for($a=1;$a <=  $jumlah_jam ; $a++ )
+    private function jamke_istirahat($jam_masuk,$jam_istirahat,$detik,$jumlah_jam,$durasi_istirahat)
     {
-        if(count($jam_istirahat) > 1)
+        // dd(date('H:i:s',$jam_masuk_upacara));
+        for($a=1;$a <=  $jumlah_jam ; $a++ )
         {
-            
-            for($a=1;$a <=  $jumlah_jam ; $a++ )
+            // dd(date('H:i:s',$jam_masuk + ($detik * $a)));
+            if(count($jam_istirahat) > 1)
             {
-                if($jam_masuk + ($detik * $a) == strtotime($jam_istirahat[0]))
+                
+                for($a=1;$a <=  $jumlah_jam ; $a++ )
                 {
-                    $jam_mulai_istirahat1= $jam_masuk + ($detik * $a) + (30 * 60);
-                    $jamke_istirahat1 =$a;
+                    if($jam_masuk + ($detik * $a) == strtotime($jam_istirahat[0]))
+                    {
+                        // dd('hai1');
+                        $jam_mulai_istirahat1= $jam_masuk + ($detik * $a) + ($durasi_istirahat * 60);
+                        $jamke_istirahat1 =$a;
+                    }
                 }
-            }
-            for($a=1;$a <=  $jumlah_jam ; $a++ )
-            {
-                if($jam_masuk + ($detik * $a) - (15 * 60) == strtotime($jam_istirahat[1])){
-                    $jam_mulai_istirahat2= strtotime($jam_istirahat[1]) + (30*60);
-                    $jamke_istirahat2 =$a;
+                for($a=1;$a <=  $jumlah_jam ; $a++ )
+                {
+                    // dd(date('H:i:s',$jam_masuk + ($detik * 8) - 300));
+                    // dd($jam_masuk + ($detik * 8) - 300 == strtotime($jam_istirahat[1]) );
+                    if($jam_masuk + ($detik * $a) - 300 == strtotime($jam_istirahat[1])) {
+                        // dd('hai1');
+                        $jam_mulai_istirahat2= strtotime($jam_istirahat[1]) + ($durasi_istirahat*60);
+                        $jamke_istirahat2 =$a;
+                    // dd(date('H:i:s',$jamke_istirahat2);
                 }
+
             }
+            // dd($jamke_istirahat2);
                 return $jamke_istirahat=['pertama'=> $jamke_istirahat1,'jam_mulai_istirahat1'=>$jam_mulai_istirahat1,'kedua'=>$jamke_istirahat2,'jam_mulai_istirahat2' => $jam_mulai_istirahat2];
             }
         
@@ -588,14 +632,14 @@ private function cekJam($jam)
     $jam_pulang=strtotime(date($jam_pulang));
     // dd(date('H:i:s',$jam),date('H:i:s',$jam_masuk));
     // if()
-
+// dd($jam);
     if($jam_sekarang < $jam_masuk)
     {
         return $status = 'unactive';
         
     }
 
-    elseif($jam >= $jam_pulang)
+    elseif($jam_sekarang >= $jam_pulang)
     {
         return $status = 'unactive';
     }   

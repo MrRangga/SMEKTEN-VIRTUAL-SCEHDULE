@@ -4,14 +4,66 @@
 
 @section('content')
 
-<div class="jumbotron ">
+<div id="carouselExampleControls" class="carousel slide " data-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img class="d-block" src="{{asset('img/Artboard 1.png')}}" alt="First slide">
+      <div class="carousel-caption">
+          <img src="{{asset('img/Untitled-4.png')}}" class="d-inline" width="200">
+          <div class="item">
+            <h3>SMKN 10 SURABAYA </h3>
+            <p>CERDAS BERKARAKTER <b> INOVATIF</b> & KREATIF</p>
+
+            <a href="http://www.smkn10surabaya.sch.id/" type="button" class="btn btn-outline-light px-5 mb-3 tmbl">Lihat</a>
+            <p>
+                <i class="fab fa-facebook-f"></i>
+                <em>smkn10surabaya</em> 
+
+                <i class="fab fa-instagram"></i>
+
+                <em>@smkn10surabaya</em>
+
+                <i class="fas fa-globe"></i>
+                <em>http://www.smkn10surabaya.sch.id/</em> 
+            </p>
+          </div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img class="d-block w-100 h-100" src="{{asset('img/2.png')}}" alt="Second slide">
+
+      <div class="carousel-caption">
+          <i class="far fa-calendar-alt" id="item2"></i>
+        <h3>SMEKTEN VIRTUAL JADWAL</h3>
+        <p>Adalah Aplikasi Monitoring Jadwal pembelajran & Ruang Sederhana </p>
+        <a href="url()" class="btn btn-outline-light px-5 tmbl2" data-toggle="modal"  data-target="#exampleModalLong">Baca</a>  
+        @auth
+            
+        <a href="{{url('sekolah')}}" class="btn btn-outline-light ml-3 px-4 tmbl2">Lanjutkan</a>  
+        @endauth
+        <a href="{{url('jadwal')}}" class="btn btn-outline-light ml-3 px-5 tmbl2">Ruang</a>  
+      </div>
+    </div>
+
+    
+    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+  </div>
+</div>
+{{-- <div class="jumbotron ">
     <h1 class="display-4">Sekolahku , its so simple and usefull</h1>
     <p class="lead">Aplikasi monitoring jadwal Sekolah sederhana dikembangkan oleh Mohammad Firmansyah</p>
     <button type="button" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#exampleModalLong">
       Documentation
     </button>
   <a href="{{url('sekolah')}}" class="btn btn-lg btn-success float-right">Lanjut</a>
-  </div>
+  </div> --}}
   <!-- Button trigger modal -->
 
 
